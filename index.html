@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>中国梦 · 民族复兴（反诈学习模拟版）</title>
+<style>
+  :root{
+    --red:#d42b2b; --red-deep:#9c1414; --red-grad:linear-gradient(135deg,#e84545,#b31217);
+    --blue:#1d3f8f; --blue-deep:#0a1c42; --blue-bright:#2e6fd8;
+    --gold:#f6c65b; --ink:#1b2b55; --gray:#7a86a8; --bg:#eef1f8;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%}
+  body{background:#05070f;font-family:"PingFang SC","Microsoft YaHei","Noto Sans SC",system-ui,sans-serif;color:var(--ink)}
+  .kai{font-family:"KaiTi","STKaiti","楷体",serif}
+  .app{max-width:430px;margin:0 auto;min-height:100vh;position:relative;box-shadow:0 0 40px rgba(0,0,0,.6);overflow:hidden;background:var(--bg)}
+  .screen{display:none}
+  .screen.active{display:block;animation:fadeIn .35s ease}
+  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+
+  /* ====== 模拟声明横幅 ====== */
+  .edu-top{position:sticky;top:0;z-index:70;background:linear-gradient(135deg,#7c0f20,#b3263a);color:#fff;
+    font-size:11px;letter-spacing:1px;padding:7px 12px;display:flex;gap:7px;align-items:center;box-shadow:0 2px 8px rgba(0,0,0,.3)}
+  .edu-top svg{flex:none}
+  .edu-strip{position:fixed;left:50%;transform:translateX(-50%);width:100%;max-width:430px;z-index:70;
+    background:rgba(124,15,32,.96);color:#ffdcdc;font-size:10px;text-align:center;letter-spacing:.5px;padding:5px 8px;line-height:1.5}
+  #eduStripMain{bottom:calc(52px + env(safe-area-inset-bottom))}
+  #eduStripReg{bottom:0;border-top:1px solid rgba(255,255,255,.18)}
+
+  /* ====== 教学模式 / 演示模式 开关 ====== */
+  .edu-top .mar{flex:1;min-width:0}
+  .mode-btn{margin-left:auto;flex:none;height:22px;padding:0 9px;border-radius:999px;
+    border:1px solid rgba(255,255,255,.55);background:rgba(0,0,0,.24);color:#fff;
+    font-size:10px;letter-spacing:1px;cursor:pointer;white-space:nowrap;font-family:inherit}
+  .mode-btn:active{transform:scale(.95)}
+  body.mode-demo .mode-btn{background:rgba(255,255,255,.92);color:#8c1220;border-color:transparent}
+
+  /* ====== 协议条文弹窗 ====== */
+  .terms .doc-top{text-align:center;font-size:14px;font-weight:900;letter-spacing:2px;color:#1b2b55;font-family:"KaiTi","STKaiti",serif}
+  .terms .doc-sub{text-align:center;font-size:10px;color:#9aa3bd;margin:4px 0 11px}
+  .terms h4{font-size:12.5px;font-weight:800;color:#c11f1f;margin:12px 0 4px}
+  .terms h4:first-of-type{margin-top:2px}
+  .terms p{font-size:12px;line-height:1.85;color:#3c4666}
+  .terms .note{margin-top:13px;font-size:10.5px;color:#b0403f;background:#fdf1f1;border-radius:9px;padding:10px 11px;line-height:1.75}
+
+  /* ====== 拆解手册页 ====== */
+  .guide-hero{background:linear-gradient(140deg,#0b1a45,#1d3f8f 85%);padding:19px 18px 20px;position:relative;overflow:hidden}
+  .guide-hero::after{content:"";position:absolute;right:-26px;top:-32px;width:112px;height:112px;border-radius:50%;background:rgba(246,198,91,.12)}
+  .guide-hero h2{position:relative;color:#fff;font-size:19px;letter-spacing:2px}
+  .guide-hero p{position:relative;margin-top:7px;color:rgba(255,255,255,.76);font-size:11px;line-height:1.75}
+  .guide-hero .gtip{position:relative;display:inline-block;margin-top:10px;font-size:10.5px;color:#ffd98a;background:rgba(0,0,0,.24);border-radius:999px;padding:4px 11px}
+  .grp-blk{background:#fff;border-radius:13px;padding:13px 15px;margin:14px 14px 0;box-shadow:0 3px 10px rgba(20,40,90,.07)}
+  .gblk-t{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:800;margin-bottom:4px}
+  .gblk-n{margin-left:auto;font-size:10px;color:#9aa3bd;font-weight:600}
+  .g-item{display:flex;gap:10px;padding:11px 0;cursor:pointer;align-items:flex-start}
+  .g-item + .g-item{border-top:1px solid #f1f3f9}
+  .g-item:active{background:#f8f9fd}
+  .g-chip{flex:none;font-size:10px;color:#fff;background:var(--red-grad);border-radius:6px;padding:3px 8px;letter-spacing:1px;margin-top:1px;white-space:nowrap}
+  .g-txt{flex:1;min-width:0}
+  .g-hook{font-size:12.5px;font-weight:700;line-height:1.55}
+  .g-spot{font-size:11px;color:#8b95b3;line-height:1.65;margin-top:3px}
+  .g-arr{flex:none;color:#c3cadd;align-self:center}
+
+  /* ====== 注册页 ====== */
+  #screen-register{position:relative;min-height:100vh;background:
+    radial-gradient(120% 55% at 50% -6%,rgba(212,43,43,.42),transparent 60%),
+    radial-gradient(80% 40% at 85% 12%,rgba(46,111,216,.28),transparent 60%),
+    linear-gradient(180deg,#0b1a45 0%,#122a63 52%,#0a1738 100%)}
+  #screen-register::before{content:"";position:absolute;inset:0;pointer-events:none;
+    background-image:radial-gradient(1.4px 1.4px at 18% 14%,rgba(255,255,255,.85),transparent 55%),
+    radial-gradient(1.2px 1.2px at 74% 9%,rgba(255,255,255,.7),transparent 55%),
+    radial-gradient(1.6px 1.6px at 88% 30%,rgba(255,255,255,.6),transparent 55%),
+    radial-gradient(1.1px 1.1px at 33% 34%,rgba(255,255,255,.5),transparent 55%),
+    radial-gradient(1.4px 1.4px at 58% 25%,rgba(255,255,255,.55),transparent 55%)}
+  .reg-wrap{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;padding:16px 0 56px;min-height:100vh}
+  .emblem{width:58px;height:58px;filter:drop-shadow(0 0 16px rgba(246,198,91,.55));animation:pulse 2.6s ease-in-out infinite}
+  @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+  .brand-line{display:flex;align-items:center;margin-top:16px}
+  .brand-small{font-size:16px;color:#ffe3b0;letter-spacing:6px;font-weight:600;opacity:.9}
+  .brand-dot{width:7px;height:7px;border-radius:50%;background:#ff4b3e;box-shadow:0 0 10px 3px rgba(255,75,62,.85);margin:2px 13px 0;flex:none}
+  .brand-big{font-size:40px;font-weight:900;letter-spacing:9px;margin-right:-9px;
+    background:linear-gradient(180deg,#ffefc2 8%,#ffcf6e 38%,#ff9d4d 55%,#e03434 100%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    filter:drop-shadow(0 0 14px rgba(255,90,50,.5)) drop-shadow(0 2px 3px rgba(0,0,0,.35))}
+  .reg-slogan{margin-top:8px;font-size:12px;color:#93a8dd;letter-spacing:5px}
+  .reg-divider{margin-top:10px;width:180px;height:1px;background:linear-gradient(90deg,transparent,rgba(246,198,91,.7),transparent)}
+  .reg-card{width:calc(100% - 44px);margin-top:12px;background:rgba(255,255,255,.055);
+    border:1px solid rgba(140,170,240,.22);border-radius:18px;padding:22px 18px 20px;
+    backdrop-filter:blur(10px);box-shadow:0 12px 32px rgba(3,8,25,.45)}
+  .reg-title{font-size:15px;color:#eef2ff;letter-spacing:2px;text-align:center;margin-bottom:14px;line-height:1.6}
+  .reg-title b{color:#ffcf6e}
+  .field{display:flex;align-items:center;gap:10px;background:rgba(9,18,48,.65);
+    border:1px solid rgba(120,150,220,.28);border-radius:12px;padding:0 14px;height:40px;margin-bottom:9px;transition:.2s}
+  .field:focus-within{border-color:rgba(255,120,100,.75);box-shadow:0 0 0 3px rgba(212,43,43,.18)}
+  .field svg{flex:none;color:#7d92c9}
+  .field input{flex:1;min-width:0;background:none;border:none;outline:none;color:#fff;font-size:14.5px;letter-spacing:.5px}
+  .field input::placeholder{color:#66779f;letter-spacing:1px}
+  .code-row{display:flex;gap:8px;margin-bottom:9px;align-items:center}
+  .code-row .field{margin-bottom:0;flex:0 1 46%;max-width:158px}
+  .code-btn{flex:none;height:40px;padding:0 13px;border:none;border-radius:12px;background:var(--red-grad);
+    color:#fff;font-size:12.5px;letter-spacing:1px;white-space:nowrap;cursor:pointer;transition:.15s}
+  .code-btn:active{transform:scale(.96)}
+  .code-btn:disabled{background:linear-gradient(135deg,#4a5b8c,#33415f);color:#9aa8cc}
+  .demo-note{font-size:10.5px;color:#8fa0cd;line-height:1.6;margin:0 2px 14px}
+  .agree{display:flex;align-items:flex-start;gap:8px;font-size:11.5px;color:#8fa0cd;line-height:1.6;margin:0 2px 16px}
+  .agree input{display:none}
+  .agree .box{flex:none;width:15px;height:15px;margin-top:2px;border-radius:4px;border:1px solid #5a6f9f;position:relative;transition:.15s}
+  .agree input:checked + .box{background:var(--red-grad);border-color:transparent}
+  .agree input:checked + .box::after{content:"";position:absolute;left:4px;top:1px;width:4px;height:8px;border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg)}
+  a.terms-link{color:#ffcf6e;text-decoration:none;border-bottom:1px dashed rgba(255,207,110,.55);cursor:pointer}
+  a.terms-link:active{opacity:.7}
+  .agree-sub{display:block;margin-top:3px;font-style:normal;font-size:10.5px;color:#9fb0d6}
+  .btn-main{width:100%;height:50px;border:none;border-radius:9999px;background:var(--red-grad);color:#fff;
+    font-size:17px;font-weight:700;letter-spacing:8px;text-indent:8px;cursor:pointer;transition:.15s;
+    box-shadow:0 8px 22px rgba(224,52,52,.45),inset 0 1px 0 rgba(255,255,255,.3)}
+  .btn-main:active{transform:scale(.97)}
+  .btn-main:disabled{filter:saturate(.5) brightness(.85)}
+  .btn-pair{display:flex;gap:8px;margin-bottom:12px}
+  .btn-pair .btn-main,.btn-pair .btn-sub{height:36px;border-radius:8px;font-size:13px;font-weight:700;
+    letter-spacing:4px;text-indent:4px;cursor:pointer;transition:.15s;box-shadow:none}
+  .btn-pair .btn-main{flex:1.3}
+  .btn-sub{flex:1;border:1px solid rgba(255,207,110,.55);
+    background:rgba(255,207,110,.1);color:#ffcf6e}
+  .btn-sub:active{transform:scale(.97);background:rgba(255,207,110,.16)}
+  .btn-pair .btn-main:not(.on){opacity:.5}
+  .btn-sub.on{background:linear-gradient(135deg,#f6c65b,#d99a2b);color:#3a2400;border-color:transparent}
+  .reg-panel{display:none}
+  .reg-panel.on{display:block}
+  .reg-panel .btn-main{height:44px;border-radius:10px;font-size:15px;letter-spacing:6px;text-indent:6px;
+    margin-top:4px;box-shadow:0 6px 18px rgba(224,52,52,.4)}
+
+  /* ====== 弹窗内表单 / 邮箱绑定确认 ====== */
+  .m-field{background:#f5f7fc;border:1px solid #dfe4f0;border-radius:10px;padding:10px 12px;margin-bottom:9px}
+  .m-field input{width:100%;border:none;background:transparent;font-size:13px;color:#1b2b55;outline:none;font-family:inherit}
+  .m-field input::placeholder{color:#a8b2cc}
+  .m-hint{font-size:10.5px;color:#8b95b3;line-height:1.7}
+  .bind-row{font-size:12.5px;line-height:1.85;color:#3c4666;margin-bottom:6px}
+  .bind-row b{color:#c11f1f;margin-right:3px}
+
+  /* ====== 主页通用 ====== */
+  #screen-main{background:var(--bg)}
+  .main-header{position:relative;background:linear-gradient(135deg,#b31a1a 0%,#dd3b34 48%,#b31a1a 100%);
+    padding:14px 16px 13px;overflow:hidden;box-shadow:0 4px 14px rgba(150,20,20,.35)}
+  .main-header::before{content:"";position:absolute;inset:0;opacity:.14;
+    background:repeating-conic-gradient(from 0deg at 110% -20%,rgba(255,255,255,.9) 0 4deg,transparent 4deg 14deg)}
+  .mh-top{position:relative;display:flex;align-items:center;gap:9px}
+  .mh-title{font-size:20px;font-weight:900;color:#fff;letter-spacing:3px;text-shadow:0 1px 3px rgba(90,10,10,.5)}
+  .mh-date{margin-left:auto;font-size:10.5px;color:rgba(255,255,255,.92);text-align:right;line-height:1.5}
+  .mh-slogan{position:relative;margin-top:4px;font-size:11px;color:#ffe1b8;letter-spacing:3px}
+  .notice{position:relative;margin-top:11px;display:flex;align-items:center;gap:8px;height:33px;
+    background:rgba(255,255,255,.94);border-radius:999px;padding:0 12px;box-shadow:0 3px 8px rgba(120,15,15,.25)}
+  .notice svg{flex:none;color:#d42b2b}
+  .notice-tag{flex:none;font-size:10px;color:#fff;background:var(--red-grad);border-radius:999px;padding:2px 7px}
+  .notice-text{flex:1;font-size:11.5px;color:#333;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+  .sec{margin:14px 14px 0;animation:fadeUp .5s ease both}
+  .sec-head{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+  .sec-bar{width:4px;height:16px;border-radius:2px;background:linear-gradient(180deg,#e04040,#b31217)}
+  .sec-title{font-size:15.5px;font-weight:800;letter-spacing:1px}
+  .sec-more{margin-left:auto;font-size:10.5px;color:#b0403f;font-weight:600}
+
+  /* 解冻横幅 */
+  .unf{position:relative;border-radius:15px;overflow:hidden;padding:16px 15px 13px;color:#fff;
+    background:linear-gradient(140deg,#7c0f20,#c22326 60%,#8f1626);box-shadow:0 8px 20px rgba(120,15,20,.35)}
+  .unf::before{content:"";position:absolute;inset:0;opacity:.15;
+    background:repeating-conic-gradient(from -12deg at 50% 140%,rgba(255,215,120,.95) 0 5deg,transparent 5deg 16deg)}
+  .unf-tag{position:relative;font-size:10px;color:#ffe3a0;border:1px solid rgba(255,227,160,.55);border-radius:999px;padding:2.5px 9px;display:inline-block;letter-spacing:1px}
+  .unf-title{position:relative;margin-top:8px;font-size:16px;font-weight:900;letter-spacing:1px}
+  .unf-sum{position:relative;margin-top:6px;font-size:30px;font-weight:900;color:#ffd98a;font-variant-numeric:tabular-nums;text-shadow:0 0 14px rgba(255,200,110,.45)}
+  .unf-sum small{font-size:12px;font-weight:600;margin-left:3px}
+  .unf-note{position:relative;margin-top:3px;font-size:10.5px;color:rgba(255,255,255,.75)}
+  .prog-row{position:relative;display:flex;align-items:center;gap:9px;margin-top:11px}
+  .prog{flex:1;height:7px;border-radius:4px;background:rgba(255,255,255,.22);overflow:hidden}
+  .prog i{display:block;height:100%;width:87%;border-radius:4px;background:linear-gradient(90deg,#ffd98a,#f6a94b);box-shadow:0 0 8px rgba(255,200,110,.6)}
+  .prog-pct{font-size:12px;font-weight:800;color:#ffd98a}
+  .unf-cd{position:relative;margin-top:9px;font-size:11px;color:#ffe3a0;display:flex;align-items:center;gap:6px}
+  .unf-cd b{font-variant-numeric:tabular-nums;background:rgba(0,0,0,.28);border-radius:6px;padding:2px 7px;font-weight:700}
+  .unf-btn{position:relative;margin-top:11px;width:100%;height:36px;border:none;border-radius:9999px;
+    background:linear-gradient(135deg,#ffe3a0,#f6c65b);color:#6b3208;font-size:13px;font-weight:800;letter-spacing:3px;cursor:pointer}
+  .unf-btn:active{transform:scale(.98)}
+
+  /* 签到 */
+  .sign-card{background:#fff;border-radius:13px;padding:14px 15px;box-shadow:0 3px 10px rgba(20,40,90,.07)}
+  .sign-top{display:flex;align-items:center;gap:8px}
+  .sign-top b{font-size:14.5px}
+  .sign-top span{margin-left:auto;font-size:10.5px;color:#c47a12;background:#fff6e2;border-radius:999px;padding:2.5px 9px}
+  .sign-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin:12px 0}
+  .sg{border-radius:9px;padding:7px 0 5px;text-align:center;background:#f4f6fb;font-size:9.5px;color:#9aa3bd}
+  .sg b{display:block;font-size:13px;color:#54608a;margin-top:2px}
+  .sg.done{background:#e9f8ef;color:#2b8a50}
+  .sg.done b{color:#2b8a50}
+  .sg.today{background:var(--red-grad);color:#ffd9d9;box-shadow:0 4px 10px rgba(212,43,43,.35)}
+  .sg.today b{color:#fff}
+  .sg.lock{opacity:.55}
+  .sign-btn{width:100%;height:38px;border:none;border-radius:9999px;background:var(--red-grad);color:#fff;font-size:13.5px;font-weight:700;letter-spacing:3px;cursor:pointer;box-shadow:0 5px 12px rgba(212,43,43,.3)}
+  .sign-btn:disabled{background:linear-gradient(135deg,#3aa864,#2b8a50)}
+
+  /* 新闻 */
+  .news-card{background:#fff;border-radius:13px;padding:5px 14px;box-shadow:0 3px 10px rgba(20,40,90,.07)}
+  .news-item{display:flex;align-items:center;gap:11px;padding:11px 0}
+  .news-item + .news-item{border-top:1px solid #f1f3f9}
+  .news-doc-ic{flex:none;width:38px;height:46px;border-radius:5px;background:#fdf3f3;border:1px solid #f0d3d3;position:relative;display:flex;align-items:center;justify-content:center}
+  .news-doc-ic::before{content:"";position:absolute;top:0;left:0;right:0;height:8px;background:#c11f1f;border-radius:4px 4px 0 0}
+  .news-doc-ic span{font-size:8px;color:#c11f1f;margin-top:6px;font-weight:700}
+  .news-t{font-size:13px;font-weight:600;line-height:1.45;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .news-s{margin-top:3px;font-size:10px;color:#9aa3bd}
+  .news-s b{color:#c11f1f;font-weight:600}
+
+  /* 反诈中心卡 */
+  .fz-card{display:flex;align-items:center;gap:12px;border-radius:13px;padding:14px 15px;color:#fff;
+    background:linear-gradient(135deg,#122a63,#2653b8 85%);box-shadow:0 5px 14px rgba(18,42,99,.28)}
+  .fz-ic{flex:none;width:42px;height:42px;border-radius:12px;background:rgba(255,255,255,.14);display:flex;align-items:center;justify-content:center}
+  .fz-t{font-size:14.5px;font-weight:800;letter-spacing:.5px}
+  .fz-d{margin-top:3px;font-size:10.5px;color:rgba(255,255,255,.75);line-height:1.6}
+  .fz-hot{margin-left:auto;flex:none;font-size:11px;font-weight:800;color:#122a63;background:#fff;border-radius:999px;padding:5px 11px}
+
+  /* ====== 资产页 ====== */
+  .asset-hero{margin:14px 14px 0;border-radius:15px;padding:18px 16px;color:#fff;position:relative;overflow:hidden;
+    background:linear-gradient(140deg,#0b1a45,#1d3f8f 85%);box-shadow:0 8px 20px rgba(11,26,69,.35)}
+  .asset-hero::after{content:"";position:absolute;right:-26px;top:-30px;width:110px;height:110px;border-radius:50%;background:rgba(246,198,91,.12)}
+  .ah-label{font-size:11px;color:rgba(255,255,255,.72);letter-spacing:1px}
+  .ah-sum{margin-top:6px;font-size:32px;font-weight:900;color:#ffd98a;font-variant-numeric:tabular-nums;text-shadow:0 0 16px rgba(255,200,110,.4)}
+  .ah-sum small{font-size:13px;margin-left:2px}
+  .ah-note{margin-top:6px;font-size:10.5px;color:rgba(255,255,255,.65)}
+  .asset-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:12px 14px 0}
+  .a-card{background:#fff;border-radius:13px;padding:13px 14px;box-shadow:0 3px 10px rgba(20,40,90,.07)}
+  .a-card b{font-size:19px;color:var(--red);font-variant-numeric:tabular-nums}
+  .a-card.b b{color:#1d3f8f}
+  .a-card span{display:block;margin-top:3px;font-size:10.5px;color:var(--gray)}
+  .ch-banner{margin:14px 14px 0;border-radius:15px;padding:16px;display:flex;align-items:center;gap:14px;position:relative;overflow:hidden;
+    background:linear-gradient(135deg,#7c0f20,#c22326 75%);box-shadow:0 8px 18px rgba(120,15,20,.3)}
+  .ch-banner::before{content:"";position:absolute;inset:0;opacity:.14;background:repeating-conic-gradient(from 0deg at -10% 130%,rgba(255,255,255,.9) 0 5deg,transparent 5deg 16deg)}
+  .ch-ics{position:relative;flex:none;display:flex;gap:6px}
+  .ch-ic{width:44px;height:44px;border-radius:12px;background:rgba(255,255,255,.15);display:flex;align-items:center;justify-content:center}
+  .ch-t{position:relative;color:#fff;font-size:16px;font-weight:900;letter-spacing:1px}
+  .ch-d{position:relative;margin-top:4px;font-size:10.5px;color:rgba(255,224,190,.85);line-height:1.6}
+  .wd-card{background:#fff;border-radius:13px;padding:14px 15px;margin:14px 14px 0;box-shadow:0 3px 10px rgba(20,40,90,.07)}
+  .wd-row{display:flex;align-items:center;gap:9px}
+  .wd-row b{font-size:19px;color:var(--red);font-variant-numeric:tabular-nums}
+  .wd-row .lab{font-size:11px;color:var(--gray);margin-left:6px}
+  .wd-btn{margin-left:auto;height:34px;padding:0 22px;border:none;border-radius:9999px;background:var(--red-grad);color:#fff;font-size:12.5px;font-weight:700;letter-spacing:2px;cursor:pointer;box-shadow:0 4px 10px rgba(212,43,43,.3)}
+  .wd-btn:active{transform:scale(.96)}
+  .detail{background:#fff;border-radius:13px;padding:5px 15px;margin:12px 14px 0;box-shadow:0 3px 10px rgba(20,40,90,.07)}
+  .dt-row{display:flex;align-items:center;gap:10px;padding:12px 0}
+  .dt-row + .dt-row{border-top:1px solid #f1f3f9}
+  .dt-ic{flex:none;width:32px;height:32px;border-radius:9px;background:#fdecec;color:#d42b2b;display:flex;align-items:center;justify-content:center}
+  .dt-ic.b{background:#e9f0fd;color:#1d3f8f}
+  .dt-name{font-size:13px;font-weight:600}
+  .dt-time{font-size:10px;color:#9aa3bd;margin-top:2px}
+  .dt-amt{margin-left:auto;font-size:14px;font-weight:800;color:#2b8a50;font-variant-numeric:tabular-nums}
+
+  /* ====== 申请页 ====== */
+  .apply-banner{background:linear-gradient(140deg,#122a63,#2653b8 85%);padding:20px 18px;position:relative;overflow:hidden}
+  .apply-banner h2{color:#fff;font-size:19px;letter-spacing:2px}
+  .apply-banner p{margin-top:6px;color:rgba(255,255,255,.75);font-size:11px;letter-spacing:1px;line-height:1.7}
+  .flow{background:#fff;border-radius:13px;padding:16px 15px 6px;margin:14px 14px 0;box-shadow:0 3px 10px rgba(20,40,90,.07)}
+  .step{position:relative;padding:0 0 16px 34px}
+  .step::before{content:attr(data-n);position:absolute;left:0;top:0;width:22px;height:22px;border-radius:50%;
+    background:#fdecec;border:1.5px solid rgba(212,43,43,.4);color:#c11f1f;font-size:11px;font-weight:900;display:flex;align-items:center;justify-content:center}
+  .step::after{content:"";position:absolute;left:10.5px;top:24px;bottom:2px;width:1.5px;background:#f3d5d5}
+  .step:last-child::after{display:none}
+  .step b{font-size:13.5px}
+  .step p{margin-top:3px;font-size:11px;color:#8b95b3;line-height:1.6}
+  .form-card{background:#fff;border-radius:13px;padding:15px;margin:14px 14px 0;box-shadow:0 3px 10px rgba(20,40,90,.07);position:relative;overflow:hidden}
+  .form-card::before{content:"演示表单 · 不会提交";position:absolute;right:-24px;top:10px;transform:rotate(38deg);
+    background:rgba(212,43,43,.1);color:#c11f1f;font-size:9px;padding:2px 28px;letter-spacing:2px;font-weight:700}
+  .f-lab{font-size:11px;color:#8b95b3;margin:10px 0 5px}
+  .f-in{width:100%;height:42px;border:1px solid #e3e7f2;border-radius:10px;padding:0 12px;font-size:13px;color:var(--ink);outline:none;background:#fafbfe}
+  .f-in:focus{border-color:rgba(212,43,43,.5)}
+  .f-btn{width:100%;height:42px;border:none;border-radius:9999px;margin-top:14px;background:var(--red-grad);color:#fff;font-size:14px;font-weight:700;letter-spacing:3px;cursor:pointer}
+  .f-btn:active{transform:scale(.98)}
+  .pack{background:#fff;border-radius:13px;padding:13px 15px;margin:10px 14px 0;display:flex;align-items:center;gap:12px;box-shadow:0 3px 10px rgba(20,40,90,.07)}
+  .pk-name{font-size:14px;font-weight:800}
+  .pk-d{font-size:10.5px;color:#9aa3bd;margin-top:3px}
+  .pk-price{margin-left:auto;text-align:right}
+  .pk-price b{font-size:20px;color:var(--red);font-variant-numeric:tabular-nums}
+  .pk-price b small{font-size:11px}
+  .pk-buy{display:block;width:64px;height:30px;margin-top:5px;border:none;border-radius:9999px;background:var(--red-grad);color:#fff;font-size:11px;cursor:pointer;margin-left:auto}
+  .pk-buy:active{transform:scale(.95)}
+
+  /* ====== 进群页 ====== */
+  .inv-card{margin:14px 14px 0;border-radius:15px;padding:16px;background:linear-gradient(135deg,#b31a1a,#dd3b34 85%);color:#fff;position:relative;overflow:hidden;box-shadow:0 8px 18px rgba(150,20,20,.3)}
+  .inv-card::before{content:"";position:absolute;inset:0;opacity:.13;background:repeating-conic-gradient(from 0deg at 110% -20%,rgba(255,255,255,.9) 0 4deg,transparent 4deg 14deg)}
+  .inv-t{position:relative;font-size:15.5px;font-weight:900;letter-spacing:1px}
+  .inv-code{position:relative;margin-top:11px;display:flex;align-items:center;gap:10px;background:rgba(0,0,0,.22);border-radius:11px;padding:11px 13px}
+  .inv-code code{font-size:19px;font-weight:900;letter-spacing:3px;color:#ffd98a}
+  .inv-copy{margin-left:auto;height:32px;padding:0 16px;border:none;border-radius:9999px;background:#fff;color:#c11f1f;font-size:12px;font-weight:800;cursor:pointer}
+  .inv-rules{position:relative;margin-top:11px;display:flex;gap:7px}
+  .inv-rule{flex:1;background:rgba(255,255,255,.12);border-radius:9px;padding:7px 4px;text-align:center;font-size:10px;color:rgba(255,255,255,.9);line-height:1.5}
+  .inv-rule b{display:block;font-size:13px;color:#ffd98a}
+  .pyr-card{background:#fff;border-radius:13px;padding:16px 15px;margin:14px 14px 0;box-shadow:0 3px 10px rgba(20,40,90,.07)}
+  .pyr{display:flex;flex-direction:column;align-items:center;padding:6px 0 2px}
+  .pyr-lv{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+  .pyr-node{background:linear-gradient(135deg,#24499c,#16307a);color:#fff;border-radius:9px;padding:7px 11px;font-size:11px;text-align:center;line-height:1.5}
+  .pyr-node i{font-style:normal;color:#ffd98a;font-size:10px}
+  .pyr-node.me{background:var(--red-grad)}
+  .pyr-line{width:2px;height:13px;background:#c3cadd}
+  .pyr-cap{margin-top:10px;font-size:10.5px;color:#9aa3bd;text-align:center}
+  .grp{background:#fff;border-radius:13px;padding:5px 15px;margin:12px 14px 0;box-shadow:0 3px 10px rgba(20,40,90,.07)}
+  .grp-row{display:flex;align-items:center;gap:11px;padding:12px 0}
+  .grp-row + .grp-row{border-top:1px solid #f1f3f9}
+  .qr{flex:none;width:52px;height:52px;border:4px solid #fff;box-shadow:0 0 0 1px #e3e7f2,0 2px 6px rgba(0,0,0,.12);
+    background:repeating-conic-gradient(#1a1a2e 0 25%,#fff 0 50%) 0 0/12px 12px;position:relative}
+  .grp-info{flex:1;min-width:0}
+  .grp-nm{font-size:13.5px;font-weight:700}
+  .grp-ds{font-size:10.5px;color:#9aa3bd;margin-top:3px}
+  .grp-hot{flex:none;font-size:10px;color:#c11f1f;background:#fdecec;border-radius:999px;padding:3px 9px}
+  .script-card{margin:14px 14px 0;border-radius:13px;padding:15px;background:#fff;box-shadow:0 3px 10px rgba(20,40,90,.07);border-left:4px solid #c11f1f}
+  .script-card blockquote{font-size:12.5px;line-height:1.9;color:#5c4a3d;background:#fdf7ef;border-radius:9px;padding:11px 12px;font-family:"KaiTi","STKaiti",serif}
+  .script-card .who{margin-top:8px;font-size:10.5px;color:#9aa3bd;text-align:right}
+
+  /* ====== 我的页 ====== */
+  .mine-top{background:linear-gradient(140deg,#0b1a45,#1d3f8f 85%);padding:24px 18px 44px;position:relative;overflow:hidden}
+  .mine-top::after{content:"";position:absolute;right:-24px;top:-30px;width:110px;height:110px;border-radius:50%;background:rgba(246,198,91,.12)}
+  .user-row{position:relative;display:flex;align-items:center;gap:13px}
+  .avatar{flex:none;width:54px;height:54px;border-radius:50%;background:linear-gradient(140deg,#e84545,#f6c65b);
+    display:flex;align-items:center;justify-content:center;font-size:21px;font-weight:900;color:#fff;
+    border:2px solid rgba(255,255,255,.55);box-shadow:0 0 0 4px rgba(255,255,255,.12)}
+  .u-name{color:#fff;font-size:16.5px;font-weight:800;letter-spacing:1px}
+  .u-id{margin-top:4px;font-size:10.5px;color:rgba(255,255,255,.65)}
+  .u-lv{flex:none;margin-left:auto;font-size:10px;color:#5a3a00;background:linear-gradient(135deg,#ffe3a0,#f6c65b);border-radius:999px;padding:4px 10px;letter-spacing:1px;font-weight:800}
+  .mine-stats{position:relative;display:flex;margin:-28px 14px 0;background:#fff;border-radius:14px;box-shadow:0 6px 18px rgba(20,40,90,.12);padding:14px 0}
+  .mst{flex:1;text-align:center;position:relative}
+  .mst + .mst::before{content:"";position:absolute;left:0;top:8px;bottom:8px;width:1px;background:#eef1f8}
+  .mst b{font-size:18px;color:#d42b2b;font-variant-numeric:tabular-nums}
+  .mst span{display:block;margin-top:3px;font-size:10.5px;color:var(--gray)}
+  .menu{margin:14px 14px 0;background:#fff;border-radius:14px;box-shadow:0 3px 10px rgba(20,40,90,.07);overflow:hidden}
+  .mi{display:flex;align-items:center;gap:11px;padding:15px;cursor:pointer;font-size:13.5px;font-weight:600}
+  .mi + .mi{border-top:1px solid #f1f3f9}
+  .mi:active{background:#f8f9fd}
+  .mi .ic{flex:none;width:30px;height:30px;border-radius:9px;display:flex;align-items:center;justify-content:center}
+  .mi .ic.r{background:#fdecec;color:#d42b2b}
+  .mi .ic.b{background:#e9f0fd;color:#1d3f8f}
+  .mi .ic.g{background:#e9f8ef;color:#2b8a50}
+  .mi .arr{margin-left:auto;color:#c3cadd}
+  .mi .badge{margin-left:auto;font-size:10px;color:#c11f1f;background:#fdecec;border-radius:999px;padding:2.5px 9px}
+  .mi .badge.ok{color:#2b8a50;background:#e9f8ef}
+  .logout{display:block;margin:16px auto 8px;width:calc(100% - 28px);height:44px;border-radius:9999px;background:#fff;color:#c11f1f;font-size:14px;letter-spacing:3px;border:1px solid rgba(212,43,43,.4);cursor:pointer}
+  .logout:active{background:#fdf1f1}
+
+  /* ====== 底部导航 ====== */
+  .tabbar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;z-index:80;
+    background:rgba(255,255,255,.97);backdrop-filter:blur(10px);border-top:1px solid #eceff7;
+    display:flex;height:calc(52px + env(safe-area-inset-bottom));padding-bottom:env(safe-area-inset-bottom);box-shadow:0 -4px 16px rgba(20,40,90,.06)}
+  .tab{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;position:relative;color:#9aa3bd;transition:.15s;cursor:pointer}
+  .tab svg{width:19px;height:19px}
+  .tab span{font-size:9.5px;letter-spacing:1px}
+  .tab.on{color:#d42b2b}
+  .tab.on::before{content:"";position:absolute;top:3px;width:14px;height:3px;border-radius:2px;background:linear-gradient(90deg,#e84545,#f6c65b)}
+  .page{display:none;padding-bottom:calc(96px + env(safe-area-inset-bottom))}
+  .page.active{display:block}
+  .foot{margin:22px 0 14px;text-align:center;font-size:10px;color:#98a1bd;line-height:2}
+
+  /* ====== 弹窗 ====== */
+  .mask{position:fixed;inset:0;z-index:100;background:rgba(6,10,25,.55);backdrop-filter:blur(6px);
+    display:none;align-items:center;justify-content:center;padding:24px}
+  .mask.show{display:flex;animation:fadeIn .2s ease}
+  .modal{width:100%;max-width:380px;max-height:80vh;background:#fff;border-radius:18px;overflow:hidden;
+    display:flex;flex-direction:column;animation:mIn .3s cubic-bezier(.3,.9,.4,1.1);box-shadow:0 20px 60px rgba(0,0,0,.4)}
+  @keyframes mIn{from{opacity:0;transform:translateY(26px) scale(.96)}to{opacity:1;transform:translateY(0) scale(1)}}
+  .m-head{flex:none;padding:15px 16px 13px;color:#fff;position:relative}
+  .m-title{font-size:15.5px;font-weight:800;letter-spacing:1px;padding-right:32px;line-height:1.4}
+  .m-close{position:absolute;right:10px;top:10px;width:30px;height:30px;border:none;background:rgba(255,255,255,.18);border-radius:50%;color:#fff;font-size:15px;cursor:pointer}
+  .m-body{flex:1;overflow-y:auto;padding:15px 16px;font-size:13px;line-height:1.8;color:#3c4666}
+  .m-body::-webkit-scrollbar{width:6px}
+  .m-body::-webkit-scrollbar-thumb{background:linear-gradient(180deg,#f6c65b,#d99a2b);border-radius:3px}
+  .m-body p + p{margin-top:8px}
+  .m-foot{flex:none;padding:12px 16px;border-top:1px solid #f1f3f9;display:flex;gap:10px}
+  .m-btn{flex:1;height:42px;border-radius:9999px;border:none;font-size:14px;letter-spacing:2px;cursor:pointer}
+  .m-btn:active{transform:scale(.97)}
+  .m-btn.pri{background:var(--red-grad);color:#fff;box-shadow:0 5px 14px rgba(212,43,43,.35)}
+  .m-btn.ghost{background:#f2f4fa;color:#54608a;border:1px solid #e3e7f2}
+
+  /* 套路拆解内容 */
+  .tip-row{display:flex;gap:9px;padding:9px 11px;border-radius:10px;background:#f7f8fc;margin-bottom:8px;font-size:12.5px;line-height:1.7}
+  .tip-row b{flex:none;color:#fff;font-size:10px;border-radius:5px;padding:2.5px 7px;height:fit-content;letter-spacing:1px;margin-top:2px}
+  .tip-row.h{background:#fdf1f1}.tip-row.h b{background:#d42b2b}
+  .tip-row.a{background:#f0f4fc}.tip-row.a b{background:#1d3f8f}
+  .tip-row.c{background:#faf6ec}.tip-row.c b{background:#9a6b12}
+  .tip-row.s{background:#eff8f2}.tip-row.s b{background:#2b8a50}
+  .tip-note{margin-top:4px;font-size:10.5px;color:#b0403f;background:#fdf1f1;border-radius:9px;padding:9px 11px;line-height:1.7}
+
+  /* 伪造红头文件 */
+  .fake-doc{position:relative;background:#fff;border:1.5px solid #e3b9b9;border-radius:8px;padding:18px 14px 14px;margin-bottom:12px;overflow:hidden}
+  .fake-doc::after{content:"伪造示例 · 仅供识别";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) rotate(-18deg);
+    font-size:21px;color:rgba(212,43,43,.15);font-weight:900;white-space:nowrap;letter-spacing:4px}
+  .fd-title{text-align:center;color:#c11f1f;font-size:15.5px;font-weight:900;letter-spacing:2px;font-family:"KaiTi","STKaiti",serif}
+  .fd-no{text-align:center;font-size:10px;color:#666;margin:6px 0 2px}
+  .fd-line{height:2px;background:#c11f1f;margin:8px 0 10px}
+  .fd-body{font-size:12px;color:#333;line-height:2;text-indent:2em}
+  .fd-sign{text-align:right;font-size:11.5px;color:#333;margin-top:8px}
+  .fd-seal{display:inline-block;border:2px solid rgba(193,31,31,.7);color:rgba(193,31,31,.8);border-radius:50%;padding:9px 7px;font-size:9.5px;transform:rotate(-12deg);margin-top:6px;font-weight:800;letter-spacing:1px}
+
+  .toast{position:fixed;top:12%;left:50%;transform:translateX(-50%) translateY(-8px);z-index:200;
+    max-width:82%;background:rgba(12,16,34,.92);color:#fff;font-size:12.5px;line-height:1.6;
+    border-radius:10px;padding:11px 17px;opacity:0;pointer-events:none;transition:.25s;text-align:center;
+    border:1px solid rgba(246,198,91,.35);box-shadow:0 8px 24px rgba(0,0,0,.4)}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ================= 注册页（模拟还原） ================= -->
+  <div class="screen active" id="screen-register">
+    <div style="background:linear-gradient(135deg,#7c0f20,#b3263a);color:#fff;font-size:11px;letter-spacing:1px;padding:8px 12px;display:flex;gap:7px;align-items:center;position:relative;z-index:2">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3.5v5c0 4.5-3.2 8.3-8 9.5-4.8-1.2-8-5-8-9.5v-5z"/><path d="M9 12l2 2 4-4.5"/></svg>
+      反诈学习专用模拟页 · 请勿输入任何真实信息
+    </div>
+    <div class="reg-wrap">
+      <svg class="emblem" viewBox="0 0 24 24" fill="none">
+        <defs><linearGradient id="gstar" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#ffefc2"/><stop offset=".5" stop-color="#f6c65b"/><stop offset="1" stop-color="#d99a2b"/>
+        </linearGradient></defs>
+        <path d="M12 1.8l2.6 6.1 6.6.55-5 4.35 1.5 6.45L12 15.9l-5.7 3.35L7.8 12.8l-5-4.35 6.6-.55z" fill="url(#gstar)" stroke="rgba(255,255,255,.5)" stroke-width=".6"/>
+      </svg>
+      <div class="brand-line">
+        <span class="brand-small kai">中国梦</span>
+        <span class="brand-dot"></span>
+        <span class="brand-big kai">民族复兴</span>
+      </div>
+      <div class="reg-slogan">（诈骗平台典型样式 · 模拟还原）</div>
+      <div class="reg-divider"></div>
+
+      <div class="reg-card">
+        <div class="reg-title"><b>「中国梦 · 民族复兴」</b> 会员<br><span style="font-size:10.5px;color:#8fa0cd;letter-spacing:1px">模拟还原页面 · 注册即可领取「解冻资格」</span></div>
+        <div class="btn-pair">
+          <button class="btn-main on" id="btnReg">注 册</button>
+          <button class="btn-sub" id="btnLogin">登 录</button>
+        </div>
+
+        <!-- 注册表单 -->
+        <div class="reg-panel on" id="regForm">
+          <div class="field">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M3.5 7l8.5 6 8.5-6"/></svg>
+            <input id="regEmail" type="email" placeholder="请输入邮箱号" autocomplete="off">
+          </div>
+          <div class="code-row">
+            <div class="field">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="10.5" width="14" height="10" rx="2.5"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/></svg>
+              <input id="regCode" type="tel" maxlength="6" placeholder="请输入验证码">
+            </div>
+            <button class="code-btn" id="btnCode">获取验证码</button>
+          </div>
+          <div class="demo-note">演示环境，无需查收邮件，点击「获取验证码」即可获得演示码。</div>
+          <div class="field">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="10.5" width="14" height="10" rx="2.5"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/></svg>
+            <input id="regPwd" type="password" placeholder="请输入大小写加数字的登录密码" autocomplete="new-password">
+          </div>
+          <div class="field">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10.5" width="16" height="10" rx="2.5"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/><circle cx="12" cy="15.5" r="1.2" fill="currentColor" stroke="none"/></svg>
+            <input id="regPayPwd" type="password" maxlength="6" inputmode="numeric" placeholder="请输入6位数字的支付密码" oninput="this.value=this.value.replace(/\D/g,'')">
+          </div>
+          <label class="agree">
+            <input type="checkbox" id="regAgree"><span class="box"></span>
+            <span>我已阅读并同意 <a class="terms-link" data-terms="user">《用户协议》</a>、<a class="terms-link" data-terms="privacy">《隐私政策》</a><em class="agree-sub">（此文件本身也是套路的一环）</em></span>
+          </label>
+          <button class="btn-main" id="btnDoReg">确认注册</button>
+        </div>
+
+        <!-- 登录表单 -->
+        <div class="reg-panel" id="loginForm">
+          <div class="field">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M3.5 7l8.5 6 8.5-6"/></svg>
+            <input id="logEmail" type="email" placeholder="请输入邮箱号" autocomplete="off">
+          </div>
+          <div class="field">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="10.5" width="14" height="10" rx="2.5"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/></svg>
+            <input id="logPwd" type="password" placeholder="请输入大小写加数字的登录密码" autocomplete="current-password">
+          </div>
+          <label class="agree">
+            <input type="checkbox" id="logAgree"><span class="box"></span>
+            <span>我已同意并确认 <a class="terms-link" data-terms="user">《用户协议》</a>、<a class="terms-link" data-terms="privacy">《隐私政策》</a><em class="agree-sub">（此文件本身也是套路的一环）</em></span>
+          </label>
+          <button class="btn-main" id="btnDoLogin">确认登录</button>
+        </div>
+      </div>
+    </div>
+    <div class="edu-strip" id="eduStripReg">本次为模拟页面，仅供反诈学习 · 信息不会被提交或保存 · 遇到类似平台请拨打 96110</div>
+  </div>
+
+  <!-- ================= 主平台（6 页签） ================= -->
+  <div class="screen" id="screen-main">
+    <div class="edu-top">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3.5v5c0 4.5-3.2 8.3-8 9.5-4.8-1.2-8-5-8-9.5v-5z"/><path d="M9 12l2 2 4-4.5"/></svg>
+      <span class="mar">本次为模拟页面，仅供反诈学习 · 拆解页</span>
+    </div>
+
+    <!-- ===== 首页 ===== -->
+    <div class="page active" id="page-home">
+      <div class="main-header">
+        <div class="mh-top">
+          <svg width="22" height="22" viewBox="0 0 24 24"><path d="M12 1.8l2.6 6.1 6.6.55-5 4.35 1.5 6.45L12 15.9l-5.7 3.35L7.8 12.8l-5-4.35 6.6-.55z" fill="#ffe3a0" stroke="rgba(255,255,255,.7)" stroke-width=".5"/></svg>
+          <div class="mh-title kai">中国梦 · 民族复兴</div>
+          <div class="mh-date" id="mhDate"></div>
+        </div>
+        <div class="mh-slogan kai">（此类平台惯用"国家项目"话术包装）</div>
+        <div class="notice">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 16v-5a6 6 0 0 1 12 0v5l1.5 2.5h-15z"/><path d="M10.5 21a1.5 1.5 0 0 0 3 0"/></svg>
+          <span class="notice-tag">公告</span>
+          <span class="notice-text">【重要】第一批解冻资金本月28日发放，未缴费会员请尽快完成工本费缴纳</span>
+        </div>
+      </div>
+
+      <div class="sec" style="margin-top:14px">
+        <div class="unf">
+          <span class="unf-tag">解冻公告</span>
+          <div class="unf-title">您的民族资产解冻名额已锁定</div>
+          <div class="unf-sum">¥2,680,000<small>.00</small></div>
+          <div class="unf-note">待解冻总额 · 解冻完成后一次性发放至会员账户</div>
+          <div class="prog-row"><div class="prog"><i></i></div><span class="prog-pct">87%</span></div>
+          <div class="unf-cd">距第一批发放还剩 <b id="unfCd">--天--:--:--</b></div>
+          <button class="unf-btn" id="btnUnfDetail">查看解冻批次</button>
+        </div>
+      </div>
+
+      <div class="sec">
+        <div class="sec-head"><span class="sec-bar"></span><span class="sec-title">每日签到</span><span class="sec-more">连续签到奖励更多</span></div>
+        <div class="sign-card">
+          <div class="sign-top"><b>签到领积分</b><span>积分可抵扣解冻手续费</span></div>
+          <div class="sign-grid">
+            <div class="sg done">第1天<b>+8</b></div>
+            <div class="sg done">第2天<b>+18</b></div>
+            <div class="sg done">第3天<b>+28</b></div>
+            <div class="sg today">今天<b>+88</b></div>
+            <div class="sg lock">第5天<b>+188</b></div>
+            <div class="sg lock">第6天<b>+288</b></div>
+            <div class="sg lock">第7天<b>+588</b></div>
+          </div>
+          <button class="sign-btn" id="btnSign">立即签到 +88 积分</button>
+        </div>
+      </div>
+
+      <div class="sec">
+        <div class="sec-head"><span class="sec-bar"></span><span class="sec-title">最新消息</span></div>
+        <div class="news-card">
+          <div class="news-item">
+            <div class="news-doc-ic"><span>文件</span></div>
+            <div style="flex:1;min-width:0">
+              <div class="news-t">关于发放第一批民族资产解冻资金的通知（民资解冻发〔2026〕082号）</div>
+              <div class="news-s">来源：<b>平台公告</b> · 今天 09:30</div>
+            </div>
+          </div>
+          <div class="news-item">
+            <div class="news-doc-ic" style="background:#f0f4fc;border-color:#d3ddf0"><span style="color:#1d3f8f">认证</span></div>
+            <div style="flex:1;min-width:0">
+              <div class="news-t">热烈祝贺本平台已通过国家安全认证，成为国家重点项目合作单位</div>
+              <div class="news-s">来源：<b>平台公告</b> · 昨天</div>
+            </div>
+          </div>
+          <div class="news-item">
+            <div class="news-doc-ic" style="background:#eff8f2;border-color:#cfe8d8"><span style="color:#2b8a50">积分</span></div>
+            <div style="flex:1;min-width:0">
+              <div class="news-t">好消息！签到积分可按 100:1 抵扣解冻工本费，多签多得</div>
+              <div class="news-s">来源：<b>运营组</b> · 2天前</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sec">
+        <div class="fz-card">
+          <div class="fz-ic"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ffd98a" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 3.5v5c0 4.5-3.2 8.3-8 9.5-4.8-1.2-8-5-8-9.5v-5z"/><path d="M9 12l2 2 4-4.5"/></svg></div>
+          <div>
+            <div class="fz-t">国家反诈中心 APP</div>
+            <div class="fz-d">官方反诈工具：涉诈APP预警、骗局曝光、一键举报<br>反诈专线 <b style="color:#ffd98a">96110</b> · 报警电话 <b style="color:#ffd98a">110</b></div>
+          </div>
+          <span class="fz-hot">去下载</span>
+        </div>
+      </div>
+      <div class="foot">本页完整还原此类诈骗平台的界面套路，仅供识骗学习</div>
+    </div>
+
+    <!-- ===== 资产页 ===== -->
+    <div class="page" id="page-asset">
+      <div class="asset-hero">
+        <div class="ah-label">我的总资产（待解冻）</div>
+        <div class="ah-sum">¥2,680,000.00</div>
+        <div class="ah-note">资产来源：国家民族资产解冻专项 · 会员配额</div>
+      </div>
+      <div class="asset-grid">
+        <div class="a-card"><b>¥86,000.00</b><span>可提现余额</span></div>
+        <div class="a-card b"><b>¥2,594,000</b><span>解冻排队中</span></div>
+      </div>
+      <div class="ch-banner">
+        <div class="ch-ics">
+          <span class="ch-ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#ffd98a" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 16l1.5-5.5A2 2 0 0 1 8.4 9h7.2a2 2 0 0 1 1.9 1.5L19 16"/><path d="M4 16h16v3.2a.8.8 0 0 1-.8.8H17l-.7-1.5H7.7L7 20H4.8a.8.8 0 0 1-.8-.8z"/><circle cx="7.8" cy="17.6" r=".5" fill="#ffd98a"/><circle cx="16.2" cy="17.6" r=".5" fill="#ffd98a"/></svg></span>
+          <span class="ch-ic"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#ffd98a" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11l8-7 8 7"/><path d="M6.5 10v9h11v-9"/><path d="M10 19v-4.5h4V19"/></svg></span>
+        </div>
+        <div style="flex:1">
+          <div class="ch-t">一车一房 · 会员专属福利</div>
+          <div class="ch-d">解冻达标即免费领取轿车一辆 + 住房一套<br>仅需缴纳购置税与公证费</div>
+        </div>
+      </div>
+      <div class="wd-card">
+        <div class="wd-row"><b>¥86,000.00</b><span class="lab">可提现余额</span><button class="wd-btn" id="btnWithdraw">立即提现</button></div>
+      </div>
+      <div class="detail">
+        <div class="dt-row">
+          <span class="dt-ic"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="4" y="4" width="16" height="16" rx="4"/><path d="M8.5 12.5l2.5 2.5 5-5.5"/></svg></span>
+          <div><div class="dt-name">每日签到收益</div><div class="dt-time">今天 08:12</div></div>
+          <span class="dt-amt">+38.00</span>
+        </div>
+        <div class="dt-row">
+          <span class="dt-ic b"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8.5" r="3"/><path d="M3 19.5c.8-3.2 3.2-4.8 6-4.8s5.2 1.6 6 4.8"/><circle cx="17" cy="9.5" r="2.4"/></svg></span>
+          <div><div class="dt-name">邀请好友奖励</div><div class="dt-time">昨天 21:40</div></div>
+          <span class="dt-amt">+114.00</span>
+        </div>
+        <div class="dt-row">
+          <span class="dt-ic"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M7 10l5 5 5-5"/><path d="M5 21h14"/></svg></span>
+          <div><div class="dt-name">解冻资产预发放</div><div class="dt-time">3天前（待确认）</div></div>
+          <span class="dt-amt" style="color:#c47a12">+8,000.00</span>
+        </div>
+      </div>
+      <div class="foot">账面数字全部为演示数据 · 这类"余额"永远无法真正提现</div>
+    </div>
+
+    <!-- ===== 申请页 ===== -->
+    <div class="page" id="page-apply">
+      <div class="apply-banner">
+        <h2 class="kai">申请资产 · 流程演示</h2>
+        <p>点击每一步，查看骗子在这一环节的真实目的</p>
+      </div>
+      <div class="flow">
+        <div class="step" data-n="1"><b>注册会员</b><p>填写邮箱成为会员，获取"解冻资格"</p></div>
+        <div class="step" data-n="2"><b>实名认证</b><p>提交姓名、身份证号、人脸识别</p></div>
+        <div class="step" data-n="3"><b>缴纳激活费</b><p>缴纳 298-2980 元不等的工本费/激活费</p></div>
+        <div class="step" data-n="4"><b>排队等待解冻</b><p>"越早缴费排位越靠前"，等待发放</p></div>
+        <div class="step" data-n="5"><b>发放资产</b><p>"卡单了，再缴一笔解冻金就能放款"</p></div>
+      </div>
+      <div class="form-card">
+        <b style="font-size:14px">资产申请表</b>
+        <div class="f-lab">真实姓名</div><input class="f-in" placeholder="演示表单，可随意填写">
+        <div class="f-lab">身份证号</div><input class="f-in" placeholder="演示表单，可随意填写">
+        <div class="f-lab">银行卡号</div><input class="f-in" placeholder="演示表单，可随意填写">
+        <div class="f-lab">手机号</div><input class="f-in" placeholder="演示表单，可随意填写">
+        <button class="f-btn" id="btnApplySubmit">提交资产申请</button>
+      </div>
+      <div class="sec-head" style="margin:16px 14px 0"><span class="sec-bar"></span><span class="sec-title">会员套餐</span><span class="sec-more" style="color:#b0403f">点击支付查看真相</span></div>
+      <div class="pack">
+        <div><div class="pk-name">普通会员</div><div class="pk-d">解锁基础解冻名额</div></div>
+        <div class="pk-price"><b><small>¥</small>298</b><button class="pk-buy" data-pack="普通会员" data-price="298">立即支付</button></div>
+      </div>
+      <div class="pack">
+        <div><div class="pk-name">黄金会员</div><div class="pk-d">解冻提速 + 一车一房优先权</div></div>
+        <div class="pk-price"><b><small>¥</small>998</b><button class="pk-buy" data-pack="黄金会员" data-price="998">立即支付</button></div>
+      </div>
+      <div class="pack">
+        <div><div class="pk-name">至尊会员</div><div class="pk-d">优先发放 + 专属客服对接</div></div>
+        <div class="pk-price"><b><small>¥</small>2980</b><button class="pk-buy" data-pack="至尊会员" data-price="2980">立即支付</button></div>
+      </div>
+      <div class="foot">等级越高、缴费越多 = 骗得越多 · "专属客服"就是骗子本人</div>
+    </div>
+
+    <!-- ===== 进群页 ===== -->
+    <div class="page" id="page-group">
+      <div class="inv-card">
+        <div class="inv-t">邀请好友 · 躺着赚钱</div>
+        <div class="inv-code"><code>ZGM-8866</code><button class="inv-copy" id="btnCopy">复制邀请码</button></div>
+        <div class="inv-rules">
+          <div class="inv-rule">邀请1人<b>+38元</b></div>
+          <div class="inv-rule">下级充值<b>返10%</b></div>
+          <div class="inv-rule">下下级充值<b>返5%</b></div>
+        </div>
+      </div>
+      <div class="pyr-card">
+        <div class="sec-head" style="margin-bottom:4px"><span class="sec-bar" style="background:linear-gradient(180deg,#2e6fd8,#122a63)"></span><span class="sec-title">层级裂变结构</span></div>
+        <div class="pyr">
+          <div class="pyr-lv"><div class="pyr-node me">我<i><br>直推 +38元/人</i></div></div>
+          <div class="pyr-line"></div>
+          <div class="pyr-lv"><div class="pyr-node">下线 1-3<i><br>充值返10%</i></div><div class="pyr-node">下线 4-9<i><br>充值返10%</i></div><div class="pyr-node">……<i><br>不断发展</i></div></div>
+          <div class="pyr-line"></div>
+          <div class="pyr-lv"><div class="pyr-node">下下线 ×9<i><br>充值返5%</i></div><div class="pyr-node">下下下线 ×27<i><br>无返利·纯垫底</i></div></div>
+        </div>
+        <div class="pyr-cap">三级以上计酬即涉嫌传销 · 你拉的亲友最终血本无归</div>
+      </div>
+      <div class="grp">
+        <div class="grp-row">
+          <div class="qr"></div>
+          <div class="grp-info"><div class="grp-nm">民族资产·核心会员①群</div><div class="grp-ds">已满员 2000 人 · 扫码进群领福利</div></div>
+          <span class="grp-hot">气氛组</span>
+        </div>
+        <div class="grp-row">
+          <div class="qr" style="background-size:10px 10px"></div>
+          <div class="grp-info"><div class="grp-nm">十五五规划·解冻交流群</div><div class="grp-ds">每天发布"内部消息"与收益截图</div></div>
+          <span class="grp-hot">托儿多</span>
+        </div>
+        <div class="grp-row">
+          <div class="qr" style="background-size:8px 8px"></div>
+          <div class="grp-info"><div class="grp-nm">海外·民族大业TG群</div><div class="grp-ds">"老师"直播间链接 · 禁言质疑者</div></div>
+          <span class="grp-hot">风险极高</span>
+        </div>
+      </div>
+      <div class="script-card">
+        <b style="font-size:13.5px">"老师"统一话术（转发示例）</b>
+        <blockquote style="margin-top:9px">"家人们！第一批解冻资金28号准时发放，还没交工本费的抓紧了！名额不多了！这是国家秘密项目，不许外传，截图别发到外面！错过这次再等十年！"</blockquote>
+        <div class="who">—— 摘自此类案件真实话术（模拟改写）</div>
+      </div>
+      <div class="foot">群里的"成功案例"几乎都是托 · 真人可能只有你一个</div>
+    </div>
+
+    <!-- ===== 我的 ===== -->
+    <div class="page" id="page-mine">
+      <div class="mine-top">
+        <div class="user-row">
+          <div class="avatar">民</div>
+          <div>
+            <div class="u-name" id="uName">爱国者·001</div>
+          </div>
+          <span class="u-lv">VIP3 至尊会员</span>
+        </div>
+      </div>
+      <div class="mine-stats">
+        <div class="mst"><b>3</b><span>邀请人数</span></div>
+        <div class="mst"><b>12</b><span>我的团队</span></div>
+        <div class="mst"><b>8600</b><span>我的积分</span></div>
+      </div>
+      <div class="menu">
+        <div class="mi" id="miRealname"><span class="ic r"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="14" rx="2.5"/><circle cx="9" cy="11" r="2.2"/><path d="M6 16.5c.6-1.6 1.7-2.4 3-2.4s2.4.8 3 2.4"/><path d="M15 9.5h3.5M15 13h3.5"/></svg></span>实名认证<span class="badge" id="rnBadge">未认证</span></div>
+        <div class="mi" id="miCertInfo"><span class="ic b"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="9" r="3.2"/><path d="M5.5 19c.9-3 3.4-4.5 6.5-4.5s5.6 1.5 6.5 4.5"/></svg></span>认证信息<svg class="arr" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg></div>
+        <div class="mi" id="miProof"><span class="ic g"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7l2-3h12l2 3"/><rect x="4" y="7" width="16" height="13" rx="2"/><path d="M12 10.5v5M9.5 13h5"/></svg></span>提交资产材料<span class="badge">2 项待传</span></div>
+        <div class="mi" id="miTeam"><span class="ic b"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="8.5" cy="9" r="2.8"/><circle cx="16.5" cy="10" r="2.3"/><path d="M3 19c.7-2.8 2.9-4.2 5.5-4.2s4.8 1.4 5.5 4.2"/><path d="M15.5 15.2c2.3.2 4 1.5 4.7 3.8"/></svg></span>我的团队<svg class="arr" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg></div>
+        <div class="mi" id="miKefu"><span class="ic g"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12a7 7 0 0 1 14 0"/><rect x="3.5" y="12" width="3.5" height="6" rx="1.7"/><rect x="17" y="12" width="3.5" height="6" rx="1.7"/><path d="M19 18.5c0 1.6-1.6 2.5-4 2.5"/></svg></span>在线客服<svg class="arr" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg></div>
+      </div>
+      <button class="logout" id="btnLogout">退 出 模 拟</button>
+      <div class="foot">所有数据均为虚构 · 关闭页面即消失 · 未上传任何服务器</div>
+    </div>
+
+    <!-- ===== 拆解手册 ===== -->
+    <div class="page" id="page-guide">
+      <div class="guide-hero">
+        <h2 class="kai">套路拆解手册</h2>
+        <p>本手册汇总此类「民族资产解冻」平台从引流、建群、洗脑到收费收割的全部环节。点击任意条目，查看「钓点 / 目的 / 案例 / 识别要点」完整拆解。</p>
+        <span class="gtip">共 27 个诈骗环节 · 逐条对照学习</span>
+      </div>
+      <div id="guideBody"></div>
+      <div class="foot">本手册为民族资产解冻类诈骗常见手法的归纳整理 · 仅供反诈学习</div>
+    </div>
+
+    <div class="edu-strip" id="eduStripMain">本次为模拟页面，仅供反诈学习 · 信息不会被提交或保存 · 遇到类似平台请拨打 96110</div>
+
+    <div class="tabbar">
+      <div class="tab on" data-page="page-home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11l8-7 8 7"/><path d="M6.5 10v9.5h11V10"/></svg><span>首页</span></div>
+      <div class="tab" data-page="page-asset"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M9 15V9.5a1.8 1.8 0 0 1 3.6 0V15"/><path d="M9 12.8h3.2"/><path d="M14.5 9.5c1.6 0 2.3.7 2.3 1.7s-.7 1.6-2.3 1.6V9.5z"/></svg><span>资产</span></div>
+      <div class="tab" data-page="page-apply"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3.5h9L19 7.5V20a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 5 20V5A1.5 1.5 0 0 1 6.5 3.5z"/><path d="M9 12h6M9 15.5h4"/></svg><span>申请</span></div>
+      <div class="tab" data-page="page-group"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6.5A2.5 2.5 0 0 1 6.5 4h11A2.5 2.5 0 0 1 20 6.5v7a2.5 2.5 0 0 1-2.5 2.5H10l-4.5 3.5V16H6.5A2.5 2.5 0 0 1 4 13.5z"/><path d="M8.5 10h.01M12 10h.01M15.5 10h.01"/></svg><span>进群</span></div>
+      <div class="tab" data-page="page-mine"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.6"/><path d="M5 20c1-3.6 3.9-5.2 7-5.2s6 1.6 7 5.2"/></svg><span>我的</span></div>
+      <div class="tab" data-page="page-guide"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 7.2C10.4 6 8.4 5.3 5.5 5.2v12.6c2.9.1 4.9.8 6.5 2 1.6-1.2 3.6-1.9 6.5-2V5.2c-2.9.1-4.9.8-6.5 2z"/><path d="M12 7.2v12.6"/></svg><span>拆解</span></div>
+    </div>
+  </div>
+
+  <div class="mask" id="mask">
+    <div class="modal">
+      <div class="m-head" id="mHead">
+        <div class="m-title" id="mTitle"></div>
+        <button class="m-close" id="mClose">✕</button>
+      </div>
+      <div class="m-body" id="mBody"></div>
+      <div class="m-foot" id="mFoot"></div>
+    </div>
+  </div>
+  <div class="toast" id="toast"></div>
+</div>
+
+<script>
+/* ================= 套路拆解数据库 ================= */
+const TIPS = {
+  "register-collect":{tag:"收集联系方式", hook:"注册即要邮箱/手机号", aim:"建立联系渠道，把你拉进群、加“客服”，开展下一步精准洗脑。", "case":"民族资产解冻类案件均以“引流—建群—洗脑—收费”四步推进，注册是第一步。", spot:"正规政务或金融机构绝不会通过“App注册送资产”的方式联系群众。"},
+  "agreement":{tag:"协议埋坑", hook:"冗长的《用户协议》", aim:"用“最终解释权归平台所有”“资金托管于平台”等条款为后续收割免责。", "case":"多数受害人到案发都没读过协议，维权时才发现条款早有陷阱。", spot:"没有公司主体、没有ICP备案、没有办公地址的“平台”，协议一文不值。"},
+  "privacy":{tag:"隐私政策摆设", hook:"声称“严格保密您的信息”", aim:"让你放心填写真实身份信息；实际上信息会被倒卖或直接用于诈骗。", "case":"受害人报案时常发现，填过信息的第二天就接到“精准”诈骗电话。", spot:"查看页面底部有无备案号、公司名称——查不到主体的一律当骗局处理。"},
+  "notice-bar":{tag:"制造紧迫感", hook:"“本月28日发放”“尽快缴费”", aim:"催促你在来不及思考和核实的情况下仓促行动、仓促交钱。", "case":"“最后名额”“即将截止”是此类平台公告栏的固定戏码。", spot:"凡是催你“限时缴费”的通知，先停一停，向官方渠道核实。"},
+  "unfreeze-banner":{tag:"天价回报诱饵", hook:"“您的民族资产待解冻 ¥2,680,000”", aim:"“国家秘密资金解冻”是民族资产解冻类诈骗的核心话术，用天文数字锁死你的贪念。", "case":"公安部多次部署打击此类犯罪，单案受害人数以万计、涉案金额上亿元。", spot:"国家从不通过“App、微信群”向个人发放所谓“解冻资产”。"},
+  "signin":{tag:"小额诱惑·习惯养成", hook:"“每天点一点，收益天天有”", aim:"用虚拟积分制造“我在赚钱”的错觉，培养每日打开习惯，为后续缴费铺路。", "case":"签到返利是此类APP提高日活、筛选“听话目标”的惯用手段。", spot:"积分只是后台可随意修改的数字；正规平台不存在“签到领钱”。"},
+  "news-doc":{tag:"伪造红头文件", hook:"带文号、盖公章的“红头文件”", aim:"冒用国家机关名义为骗局背书，让“项目”显得权威可信。", "case":"“中国民族资产解冻委员会”等落款机构根本不存在，可在中央编办网站核验。", spot:"真文件可在政府官网检索；文号格式、印章、落款均可查证——查不到=伪造。"},
+  "news-cert":{tag:"假资质假认证", hook:"“通过国家安全认证”的证书图片", aim:"用P图证书装点门面，消除你的戒心。", "case":"所谓认证编号在住建、市监、网信等任何官方系统都查不到。", spot:"资质证照一律到发证机关官网核验，查不到就是造假。"},
+  "news-score":{tag:"积分抵扣陷阱", hook:"“积分可抵扣解冻工本费”", aim:"让你为了“省钱”持续签到活跃，最终把真金白银交出去。", "case":"积分抵扣的是虚拟数字，要你缴的工本费可是真钱。", spot:"凡“签到积分+手续费抵扣”组合拳，终点都是让你缴费。"},
+  "asset-total":{tag:"虚假资产数字", hook:"账户里“躺着”的巨额余额", aim:"让你深信马上发财、舍不得“半路退出”，越陷越深。", "case":"大量受害人被假余额锚定，为“保住”这笔钱不断追加缴费。", spot:"提不出来的钱只是数字；能小额提现的部分，是“养鱼”的饵料。"},
+  "car-house":{tag:"一车一房承诺", hook:"“解冻达标免费领轿车+住房”", aim:"把暴富幻想具象化，诱导你缴纳“购置税”“公证费”等前置费用。", "case":"多名受害人被要求先缴数万元“税费”，之后即被拉黑。", spot:"天上不会掉轿车和房子；领“福利”先交钱的，一律是诈骗。"},
+  "withdraw":{tag:"提现必缴费", hook:"“提现需先缴8%手续费/保证金”", aim:"直接收割现金；缴完还会以“银行风控”“解冻金”等名目继续要钱。", "case":"“小额可提→大额收费→层层加码→拉黑”是“杀鸟盘”标准流程。", spot:"任何“先交钱才能提钱”的平台，100%是诈骗，没有例外。"},
+  "asset-detail":{tag:"小额返利养鱼", hook:"签到+38、邀请+114 等小额“到账”", aim:"用“真能提一点”建立信任，钓你投入大额资金。", "case":"先返小利、后收大额，是投资理财类诈骗的通用剧本。", spot:"返给你的小钱是鱼饵，目标是你的本金和你拉来的亲友。"},
+  "step-payout":{tag:"永远差一步", hook:"“卡单”“需缴解冻金才能放款”", aim:"在你期待值最高的时候，收割“最后一笔”——而“最后”永远不存在。", "case":"不少受害人连续缴纳四五次“解冻金”才醒悟。", spot:"所谓“差一步”，差的永远是你的一笔钱。"},
+  "step-queue":{tag:"无限期拖延", hook:"“排队中，越早缴费排位越靠前”", aim:"用漫长的等待消磨你的警觉，期间不断推出新的收费名目。", "case":"“排队三年”仍“处理中”的账户在此类案件中比比皆是。", spot:"正规资金发放从不需要在来路不明的APP里“排队”。"},
+  "realname-form":{tag:"套取身份信息", hook:"姓名 + 身份证号 + 人脸", aim:"身份信息被用于冒名注册灰产账号、洗钱过户、精准设计后续骗局。", "case":"大量“四件套”（姓名/身份证/银行卡/手机号）在黑市被打包倒卖。", spot:"非必要不提供身份证号；认真核对平台是否有合法收集资质。"},
+  "face-upload":{tag:"人脸信息采集", hook:"“眨眨眼、摇摇头”的人脸认证", aim:"人脸数据可被用于破解其他平台的人脸验证、生成深度伪造内容。", "case":"已发生多起因人脸信息泄露被冒名注册、冒名网贷的真实案例。", spot:"警惕任何要求正脸录制的“认证”，尤其是不明APP里的。"},
+  "asset-proof":{tag:"财产摸底", hook:"上传房产证、行驶证“审核资产”", aim:"摸清你的家底，评估“能骗多少”，安排“大鱼”专属话术。", "case":"黑产按受害人资产分级：房子车子越全，跟得越紧、骗得越狠。", spot:"审核你的财产证明，本质是在挑选宰杀对象。"},
+  "form-info":{tag:"信息一网打尽", hook:"一次填写姓名/身份证/银行卡/手机号", aim:"“四件套”可直接在黑市变现，也是下一步精准诈骗的弹药。", "case":"警方通报显示，受害人信息被二次利用实施“冒充公检法”诈骗。", spot:"本页演示表单不会提交任何数据——真实平台绝不该这样收集你。"},
+  "fee-pack":{tag:"收费套餐收割", hook:"298 / 998 / 2980 会员费", aim:"这是整个骗局唯一真实的收入来源——所有“回报”都是空头支票。", "case":"民族资产解冻案件中，受害人普遍被诱导“升级”缴费多次。", spot:"真项目不收“激活费”；等级越高的套餐，骗局胃口越大。"},
+  "invite":{tag:"拉人头返利", hook:"“邀请1人返38元、下级充值返10%”", aim:"把受害者变成传播者，用熟人裂变低成本获客。", "case":"按人头层级计酬已涉嫌传销犯罪，组织者牟取暴利。", spot:"靠“拉人”产生收益的模式，不是传销就是诈骗。"},
+  "pyramid":{tag:"层级裂变结构", hook:"三级返利架构图", aim:"展示“发展下线”能赚多少，刺激你把亲友拉下水。", "case":"你的“下线”血本无归后，亲友反目、债务缠身是最常见的结局。", spot:"你赚的每一分“返利”，都来自你亲友交出去的真钱。"},
+  "group-list":{tag:"群托气氛组", hook:"微信群/QQ群/TG群二维码", aim:"群内布满“托”：晒假收益、带节奏、围攻质疑者并踢出群。", "case":"警方侦办中发现：一个2000人的“会员群”，真人可能只有几十个。", spot:"群里晒的收益截图全是P的；禁言、踢人就是怕你清醒。"},
+  "script-training":{tag:"统一话术剧本", hook:"“老师”下发的转发文案", aim:"让会员照抄转发，病毒式扩大受骗面，同时用“保密”话术隔绝求证。", "case":"“国家秘密项目、不许外传”——单凭这句就可以直接判定为诈骗。", spot:"国家项目会公开发布，绝不会靠微信群转发、还怕你外传。"},
+  "vip-level":{tag:"会员等级包装", hook:"VIP3、至尊会员头衔", aim:"制造身份优越感，把“升级”和缴费牢牢绑定。", "case":"头衔越高的人，往往是被收割得越狠的人。", spot:"头衔不值一分钱，收费才是唯一目的。"},
+  "team-stats":{tag:"团队数据造假", hook:"“团队12人、积分8600”", aim:"用虚拟数字营造“事业有成”的错觉，推动你继续拉人。", "case":"后台数据由骗子随意修改，想给你看多少就是多少。", spot:"这些数字既不能提现，也不能当饭吃。"},
+  "kefu":{tag:"假客服", hook:"“7×24在线客服”", aim:"客服就是骗子本人，负责安抚情绪、解答疑问、催缴费用。", "case":"“客服”引导转账到个人账户、催促“尽快激活”是标准操作。", spot:"真平台客服绝不会让你向个人账户转账。"}
+};
+
+/* ================= 工具 ================= */
+const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
+let toastTimer;
+function showToast(msg, dur=2000){
+  const t = $('#toast'); t.textContent = msg; t.classList.add('show');
+  clearTimeout(toastTimer); toastTimer = setTimeout(()=>t.classList.remove('show'), dur);
+}
+function openModal(title, accent, body, footer){
+  $('#mTitle').textContent = title;
+  $('#mHead').style.background = 'linear-gradient(135deg,'+accent+','+accent+'cc)';
+  $('#mBody').innerHTML = body;
+  $('#mFoot').innerHTML = footer || '';
+  $('#mFoot').style.display = footer ? 'flex' : 'none';
+  $('#mask').classList.add('show');
+}
+function closeModal(){ $('#mask').classList.remove('show'); }
+$('#mClose').onclick = closeModal;
+$('#mask').addEventListener('click', e => { if(e.target === $('#mask')) closeModal(); });
+
+function tipBody(t){
+  return '<div class="tip-row h"><b>钓 点</b><span>'+t.hook+'</span></div>'
+    + '<div class="tip-row a"><b>目 的</b><span>'+t.aim+'</span></div>'
+    + '<div class="tip-row c"><b>案 例</b><span>'+(t["case"]||'')+'</span></div>'
+    + '<div class="tip-row s"><b>识别要点</b><span>'+t.spot+'</span></div>'
+    + '<p class="tip-note">以上为模拟还原内容，仅用于识骗学习。遇到类似平台，请保留证据并拨打 96110 或 110 举报。</p>';
+}
+function openTip(key){
+  const t = TIPS[key]; if(!t) return;
+  if(key === 'news-doc'){ openFakeDoc(t); return; }
+  openModal('套路拆解 · '+t.tag, '#b31217', tipBody(t), '<button class="m-btn ghost" onclick="closeModal()">我记住了</button>');
+}
+function afterAction(msg){
+  showToast(msg, 2200);
+}
+
+function openFakeDoc(t){
+  const doc = '<div class="fake-doc">'
+    + '<div class="fd-title">关于发放第一批民族资产解冻资金的通知</div>'
+    + '<div class="fd-no">民资解冻发〔2026〕082 号</div>'
+    + '<div class="fd-line"></div>'
+    + '<div class="fd-body">各省、自治区、直辖市会员站：经研究决定，第一批民族资产解冻资金定于本月28日发放。请各会员于发放前完成实名认证，并缴纳工本费三百元整，逾期视为自动放弃配额。</div>'
+    + '<div class="fd-sign">中国民族资产解冻工作委员会<br>2026年10月18日</div>'
+    + '<div style="text-align:right"><span class="fd-seal">解冻工作<br>委员会</span></div>'
+    + '</div>';
+  openModal('伪造红头文件 · 逐点识别', '#b31217', doc + tipBody(t),
+    '<button class="m-btn ghost" onclick="closeModal()">我记住了</button>');
+}
+
+/* ================= 拆解手册页（汇总全部套路） ================= */
+const GUIDE_GROUPS = [
+  {t:'注册环节', keys:['register-collect','agreement','privacy']},
+  {t:'首页 · 公告与解冻', keys:['notice-bar','unfreeze-banner','signin','news-doc','news-cert','news-score']},
+  {t:'资产页 · 财富幻象', keys:['asset-total','car-house','withdraw','asset-detail','step-payout','step-queue']},
+  {t:'申请页 · 实名与缴费', keys:['realname-form','face-upload','asset-proof','form-info','fee-pack']},
+  {t:'进群页 · 拉人头裂变', keys:['invite','pyramid','group-list','script-training']},
+  {t:'我的页 · 身份包装', keys:['vip-level','team-stats','kefu']}
+];
+(function(){
+  const wrap = $('#guideBody'); if(!wrap) return;
+  const arr = '<svg class="g-arr" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6l6 6-6 6"/></svg>';
+  wrap.innerHTML = GUIDE_GROUPS.map(g => {
+    const items = g.keys.map(k => {
+      const t = TIPS[k]; if(!t) return '';
+      return '<div class="g-item" data-gk="'+k+'"><span class="g-chip">'+t.tag+'</span>'
+        + '<div class="g-txt"><div class="g-hook">'+t.hook+'</div><div class="g-spot">'+t.spot+'</div></div>'+arr+'</div>';
+    }).join('');
+    return '<div class="grp-blk"><div class="gblk-t"><span class="sec-bar"></span>'+g.t+'<span class="gblk-n">'+g.keys.length+' 项</span></div>'+items+'</div>';
+  }).join('');
+  wrap.querySelectorAll('.g-item').forEach(el => el.addEventListener('click', () => openTip(el.dataset.gk)));
+})();
+
+/* ================= 协议 / 隐私政策 · 模拟条文 ================= */
+const TERMS_DOC = {
+  user:{
+    title:'用户协议（模拟条文）',
+    body:'<div class="terms">'
+      + '<div class="doc-top">中国梦 · 民族复兴 平台用户协议</div>'
+      + '<div class="doc-sub">版本 V3.2 · 模拟条文 · 仅供识骗学习</div>'
+      + '<h4>第一条　平台性质</h4><p>本平台为「民族资产解冻」项目指定的唯一线上服务窗口，受项目委员会委托办理会员资格审核与资产发放事宜，其他任何渠道均不代表本平台。</p>'
+      + '<h4>第二条　会员资格</h4><p>用户注册即视为自愿参与本项目。会员须按对应等级缴纳工本费、激活费后方可激活解冻资格；未缴费者名额将自动释放给其他会员。</p>'
+      + '<h4>第三条　资金说明</h4><p>会员缴纳的一切费用均用于项目手续费、公证费、税费及运营开支，一经缴纳不予退还，且不作为投资款、不产生任何利息。</p>'
+      + '<h4>第四条　资产发放</h4><p>资产发放时间、批次、金额由平台方根据项目进度统一安排，平台方拥有最终解释权。会员不得催促、不得质疑、不得在公开平台讨论本项目。</p>'
+      + '<h4>第五条　保密义务</h4><p>本项目属国家保密项目。会员不得向非会员透露任何项目信息、截图、文件。违反者取消会员资格，已缴费用不予退还。</p>'
+      + '<h4>第六条　免责条款</h4><p>因政策调整、银行风控、系统维护等不可抗力导致资产延期或无法发放的，平台方不承担任何责任，亦不退还相关费用。</p>'
+      + '<h4>第七条　争议解决</h4><p>因本协议产生的任何争议，均由平台方单方裁定，会员不得向任何第三方机构主张权利。</p>'
+      + '<div class="note">以上为模仿此类平台真实协议结构的模拟条文。请重点记住这几个字眼：「不予退还」「最终解释权」「不得质疑」「不得外传」「单方裁定」——收款方用它们提前给自己铺好了免责与封口通道，协议里出现这几条，基本可以直接判定为诈骗。</div>'
+      + '</div>'
+  },
+  privacy:{
+    title:'隐私政策（模拟条文）',
+    body:'<div class="terms">'
+      + '<div class="doc-top">中国梦 · 民族复兴 平台隐私政策</div>'
+      + '<div class="doc-sub">版本 V3.2 · 模拟条文 · 仅供识骗学习</div>'
+      + '<h4>一、信息收集范围</h4><p>为完成资格审核与资产发放，平台将收集您的姓名、身份证号、手机号、银行卡号、人脸影像，以及家庭成员、房产、车辆等资产信息。</p>'
+      + '<h4>二、信息使用目的</h4><p>上述信息用于会员身份核验、资产等级评定、发放通道对接及项目合规审查。</p>'
+      + '<h4>三、信息共享</h4><p>为完成资产发放，平台可将您的信息提供给「合作机构」「发放通道方」及项目委员会相关单位，无需另行征得您的同意。</p>'
+      + '<h4>四、留存期限</h4><p>您的信息将在平台长期留存，留存期限不设上限，直至项目全部结束或平台另行通知。</p>'
+      + '<h4>五、会员权利</h4><p>会员可申请查询本人信息使用情况，需提交书面申请并缴纳信息查询服务费；平台不提供信息删除服务。</p>'
+      + '<h4>六、政策变更</h4><p>本政策如有调整，平台将以公告形式通知，公告发布即视为您已知悉并同意。</p>'
+      + '<div class="note">以上为模仿此类平台真实隐私条款的模拟条文。请重点记住这几处：「留存期限不设上限」「可提供给合作机构、无需另行同意」「查询要缴费、删除不提供」——这类写法等于把你的身份证、银行卡、人脸数据无限期交出去，后续被冒名贷款、冒名注册、精准诈骗都源于此。</div>'
+      + '</div>'
+  }
+};
+function openTerms(kind){
+  const d = TERMS_DOC[kind]; if(!d) return;
+  openModal(d.title, '#b31217', d.body, '<button class="m-btn ghost" onclick="closeModal()">我已知晓</button>');
+}
+$$('.terms-link').forEach(a => a.addEventListener('click', e => {
+  e.preventDefault(); e.stopPropagation(); openTerms(a.dataset.terms);
+}));
+
+/* ================= 注册流程（模拟） ================= */
+let sentCode = '', codeTimer = null;
+function newDemoCode(){
+  sentCode = String(Math.floor(100000 + Math.random()*900000));
+}
+newDemoCode();                            // 预生成一个演示验证码，点击「获取验证码」时提示
+$('#btnCode').addEventListener('click', () => {
+  if(codeTimer){ showToast('验证码已发送，'+codeTimer+'s 后可重新获取'); return; }
+  const email = $('#regEmail').value.trim();
+  if(email && !/^[\w.+-]+@[\w-]+\.[\w.-]{2,}$/.test(email)){ showToast('邮箱格式不正确（演示环境可随意填写）'); return; }
+  newDemoCode();
+  showToast('演示验证码：'+sentCode+'（演示环境，未向任何邮箱发送，请记下）', 3600);
+  let left = 60; const btn = $('#btnCode');
+  codeTimer = setInterval(() => {
+    btn.textContent = left + 's 后重发'; btn.disabled = true;
+    if(--left < 0){ clearInterval(codeTimer); codeTimer = null; btn.textContent = '获取验证码'; btn.disabled = false; }
+  }, 1000);
+});
+/* 注册 / 登录 表单切换 */
+function showPanel(reg){
+  $('#regForm').classList.toggle('on', reg);
+  $('#loginForm').classList.toggle('on', !reg);
+  $('#btnReg').classList.toggle('on', reg);
+  $('#btnLogin').classList.toggle('on', !reg);
+}
+$('#btnReg').addEventListener('click', () => showPanel(true));
+$('#btnLogin').addEventListener('click', () => showPanel(false));
+
+/* 确认注册 */
+$('#btnDoReg').addEventListener('click', () => {
+  const email = $('#regEmail').value.trim();
+  if(!/^[\w.+-]+@[\w-]+\.[\w.-]{2,}$/.test(email)){ showToast('请输入正确的邮箱号（演示环境可随意填写）'); return; }
+  if(!sentCode){ showToast('请先点击「获取验证码」'); return; }
+  if($('#regCode').value.trim() !== sentCode){ showToast('验证码不正确，请输入「获取验证码」时提示的演示码'); return; }
+  if(!$('#regPwd').value.trim()){ showToast('请输入密码'); return; }
+  if(!/^\d{6}$/.test($('#regPayPwd').value.trim())){ showToast('请输入6位数的支付密码'); return; }
+  if(!$('#regAgree').checked){ showToast('请先勾选「我已阅读并同意」'); return; }
+  const btn = $('#btnDoReg'); btn.disabled = true; btn.textContent = '确认注册成功';
+  setTimeout(() => {
+    enterMain(email); btn.disabled = false; btn.textContent = '确认注册';
+    showToast('注册成功（模拟）· 全程未提交任何真实信息', 2600);
+  }, 800);
+});
+
+/* 确认登录（不再弹提示框） */
+$('#btnDoLogin').addEventListener('click', () => {
+  const email = $('#logEmail').value.trim();
+  if(!email){ showToast('请输入邮箱号（演示环境可随意填写）'); return; }
+  if(!$('#logPwd').value.trim()){ showToast('请输入登录密码'); return; }
+  if(!$('#logAgree').checked){ showToast('请先勾选「我已同意并确认」'); return; }
+  enterMain(email);
+  showToast('已进入模拟平台 · 全程未提交任何真实信息', 2600);
+});
+
+/* ================= 主平台 ================= */
+function enterMain(email){
+  $$('.screen').forEach(s => s.classList.remove('active'));
+  $('#screen-main').classList.add('active');
+  $('#uName').textContent = email ? ('爱国者·' + email) : '爱国者·001';
+  window.scrollTo(0,0);
+}
+(function(){
+  const d = new Date(), wk = '日一二三四五六'[d.getDay()];
+  $('#mhDate').innerHTML = d.getFullYear()+'年'+(d.getMonth()+1)+'月'+d.getDate()+'日<br>星期'+wk;
+})();
+
+/* 底部导航 */
+$$('#screen-main .tab').forEach(t => t.addEventListener('click', () => {
+  $$('#screen-main .tab').forEach(x => x.classList.remove('on'));
+  t.classList.add('on');
+  $$('#screen-main .page').forEach(p => p.classList.remove('active'));
+  $('#' + t.dataset.page).classList.add('active');
+  window.scrollTo(0,0);
+}));
+
+/* 倒计时（解冻横幅） */
+(function(){
+  let t = 12*86400 + 8*3600 + 36*60 + 52;
+  const el = $('#unfCd');
+  setInterval(() => {
+    t = t > 0 ? t - 1 : 0;
+    const d = Math.floor(t/86400), h = Math.floor(t%86400/3600), m = Math.floor(t%3600/60), s = t%60;
+    const p = n => String(n).padStart(2,'0');
+    el.textContent = d+'天'+p(h)+':'+p(m)+':'+p(s);
+  }, 1000);
+})();
+
+/* 签到（演示） */
+let signed = false;
+$('#btnSign').addEventListener('click', () => {
+  if(signed){ showToast('今天已签过啦（积分只是虚拟数字）'); return; }
+  signed = true;
+  const btn = $('#btnSign'); btn.disabled = true; btn.textContent = '今日已签到 · 明天再来';
+  const today = document.querySelector('.sg.today');
+  if(today){ today.classList.remove('today'); today.classList.add('done'); today.innerHTML = '已签<b>+88</b>'; }
+  afterAction('签到成功 +88 积分（虚拟数字，不产生真实收益）', 'signin');
+});
+
+$('#btnUnfDetail').addEventListener('click', () => {
+  openModal('解冻批次详情（模拟）', '#d42b2b',
+    '<div class="bind-row"><b>民族资产金额：</b>¥2,680,000.00（待解冻总额）</div>'
+    + '<div class="bind-row"><b>发放日期：</b>2026年10月28日（第一批）</div>'
+    + '<div class="bind-row"><b>距下次解封：</b>'+ $('#unfCd').textContent +'</div>'
+    + '<div class="m-hint">提示：这是典型的「天价回报诱饵」——国家不会通过 App 或微信群向个人发放所谓「解冻资产」，凡「先缴费才能解冻/提现」的一律是诈骗。</div>',
+    '<button class="m-btn pri" onclick="closeModal()">我记住了</button>');
+});
+
+/* 提现（演示） */
+$('#btnWithdraw').addEventListener('click', () => {
+  showToast('演示环境：不会产生任何扣款');
+});
+
+/* 申请表单（演示） */
+$('#btnApplySubmit').addEventListener('click', () => {
+  afterAction('演示环境：表单内容不会被提交或保存', 'form-info');
+});
+
+/* 会员套餐（演示） */
+$$('.pk-buy').forEach(b => b.addEventListener('click', e => {
+  e.stopPropagation();
+  showToast('演示环境：不会真的扣款');
+}));
+
+/* 邀请码复制（演示） */
+$('#btnCopy').addEventListener('click', () => {
+  try{ navigator.clipboard && navigator.clipboard.writeText('ZGM-8866').catch(()=>{}); }catch(e){}
+  afterAction('邀请码已复制（演示环境）', 'invite');
+});
+
+/* 我的页 */
+$('#miRealname').addEventListener('click', () => {
+  showToast('演示环境：实名信息不会被采集或提交');
+  const b = $('#rnBadge'); b.textContent = '已认证（模拟）'; b.classList.add('ok');
+});
+$('#miCertInfo').addEventListener('click', () => {
+  showToast('演示环境：认证信息为虚构数据');
+});
+$('#miProof').addEventListener('click', () => {
+  showToast('演示环境：不会上传任何文件');
+});
+$('#miTeam').addEventListener('click', () => showToast('（演示环境）团队数据为虚构'));
+$('#miKefu').addEventListener('click', () => showToast('（演示环境）无真实客服'));
+$('#btnLogout').addEventListener('click', () => {
+  openModal('退出模拟', '#b31217',
+    '<p style="text-align:center;padding:6px 0">确定要退出模拟平台吗？<br><span style="font-size:11px;color:#9aa3bd">本页为纯演示，无任何数据需要清除</span></p>',
+    '<button class="m-btn ghost" onclick="closeModal()">取 消</button>'
+    + '<button class="m-btn pri" onclick="closeModal();backToRegister();">确 定</button>');
+});
+function backToRegister(){
+  $$('.screen').forEach(s => s.classList.remove('active'));
+  $('#screen-register').classList.add('active');
+  signed = false;
+  const btn = $('#btnSign'); btn.disabled = false; btn.textContent = '立即签到 +88 积分';
+  const g = document.querySelector('.sign-grid'); 
+  g.children[3].className = 'sg today'; g.children[3].innerHTML = '今天<b>+88</b>';
+  window.scrollTo(0,0);
+}
+
+</script>
+</body>
+</html>
